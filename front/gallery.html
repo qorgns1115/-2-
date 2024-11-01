@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gallery</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+    <header>
+        <nav>
+            <a href="index.html">홈화면</a>
+            <a href="how-it-works.html">사용방법</a>
+            <a href="create-diary.html">일기제작</a>
+            <a href="gallery.html">갤러리</a>
+            <a href="contact-us.html">Contact Us</a>
+        </nav>
+    </header>
+
+    <!-- Gallery Content -->
+    <input type="date" id="diary-date">
+    <button onclick="fetchDiaryEntry()">Get Diary Entry</button>
+    <div id="diary-content-display"></div>
+
+    <script>
+    function fetchDiaryEntry() {
+        const date = document.getElementById('diary-date').value;
+
+        $.ajax({
+            url: `http://localhost:8000/get_diary/${date}`,
+            type: 'GET',
+            success: function(diaryEntry) {
+                document.getElementById('diary-content-display').innerText = diaryEntry.content;
+            },
+            error: function() {
+                alert('Diary entry not found for this date.');
+            }
+        });
+    }
+    </script>
+</body>
+</html>

@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create a Diary</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+    <header>
+        <nav>
+            <a href="index.html">홈화면</a>
+            <a href="how-it-works.html">사용방법</a>
+            <a href="create-diary.html">일기제작</a>
+            <a href="gallery.html">갤러리</a>
+            <a href="contact-us.html">Contact Us</a>        
+        </nav>
+    </header>
+
+    <!-- Create a Diary Content -->
+    <input type="text" id="diary-title" placeholder="Diary Title">
+    <textarea id="diary-content" placeholder="Write your diary..."></textarea>
+    <button onclick="createDiaryEntry()">Create Diary</button>
+
+    <script>
+    function createDiaryEntry() {
+        const title = document.getElementById('diary-title').value;
+        const content = document.getElementById('diary-content').value;
+
+        $.ajax({
+            url: 'http://localhost:8000/create_diary',
+            type: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify({ title: title, content: content }),
+            success: function(response) {
+                alert('Diary entry created successfully!');
+            },
+            error: function() {
+                alert('Failed to create diary entry.');
+            }
+        });
+    }
+    </script>
+</body>
+</html>
