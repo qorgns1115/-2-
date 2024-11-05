@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="styles.css">
+    <title>AI 일기 프로젝트</title>
+</head>
+<body>
+    <header>
+        <h1>로그인</h1>
+    </header>
+    <section>
+        <form id="login-form">
+            <label for="username">이름:</label>
+            <input type="text" id="username" name="username" required>
+            <label for="password">비밀번호:</label>
+            <input type="password" id="password" name="password" required>
+            <button type="submit">로그인</button>
+        </form>
+        <div class="buttons">
+            <a href="index.html"><button type="button">메인으로 돌아가기</button></a>
+        </div>
+    </section>
+    <script>
+        document.getElementById('login-form').addEventListener('submit', function(event) {
+            event.preventDefault();
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            
+            // 로그인 요청을 백엔드로 전송
+            fetch('/token', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                },
+                body: new URLSearchParams({
+                    'username': username,
+                    'password': password
+                })
+            }).then(response => response.json())
+            .then(data => {
+                if (data.access_token) {
+                    console.log('로그인 성공');
+                    // 토큰을 로컬 스토리지나 쿠키에 저장
+                    localStorage.setItem('token', data.access_token);
+                    window.location.href = 'emotion-tracking.html'; // 감정 추적 페이지로 리디렉션
+                } else {
+                    console.error('로그인 실패');
+                }
+            }).catch(error => {
+                console.error('오류 발생:', error);
+            });
+        });
+    </script>
+    <footer>
+        <p>&copy; 2024 AI 일기 프로젝트 팀</p>
+    </footer>
+</body>
+</html>

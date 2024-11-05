@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="styles.css">
+    <title>회원가입</title>
+</head>
+<body>
+    <header>
+        <h1>회원가입</h1>
+    </header>
+    <div class="buttons">
+        <a href="index.html"><button>메인으로 돌아가기</button></a>
+    </div>
+    <section>
+        <form id="signup-form">
+            <label for="username">이름:</label>
+            <input type="text" id="username" name="username" required>
+            <label for="password">비밀번호:</label>
+            <input type="password" id="password" name="password" required>
+            <label for="confirm-password">비밀번호 확인:</label>
+            <input type="password" id="confirm-password" name="confirm-password" required>
+            <button type="submit">회원가입</button>
+        </form>
+    </section>
+    <script>
+        document.getElementById('signup-form').addEventListener('submit', function(event) {
+            event.preventDefault();
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            const confirmPassword = document.getElementById('confirm-password').value;
+
+            if (password !== confirmPassword) {
+                alert('비밀번호가 일치하지 않습니다.');
+                return;
+            }
+            
+            // 회원가입 요청을 백엔드로 전송
+            fetch('/signup', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    'username': username,
+                    'password': password
+                })
+            }).then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    console.log('회원가입 성공');
+                    window.location.href = 'login.html'; // 로그인 페이지로 리디렉션
+                } else {
+                    console.error('회원가입 실패');
+                }
+            }).catch(error => {
+                console.error('오류 발생:', error);
+            });
+        });
+    </script>
+    <footer>
+        <p>&copy; 2024 AI 일기 프로젝트 팀</p>
+    </footer>
+</body>
+</html>

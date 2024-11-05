@@ -1,46 +1,62 @@
+
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ko">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Create a Diary</title>
-    <link rel="stylesheet" href="styles.css">
+    <title>일기 작성</title>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <header>
-        <nav>
-            <a href="index.html">홈화면</a>
-            <a href="how-it-works.html">사용방법</a>
-            <a href="create-diary.html">일기제작</a>
-            <a href="gallery.html">갤러리</a>
-            <a href="contact-us.html">Contact Us</a>        
-        </nav>
-    </header>
+    <h1>일기 작성하기</h1>
+    <form id="diaryForm">
+        <label for="where">어디서 했나요?</label>
+        <input type="text" id="where" name="where" required><br>
 
-    <!-- Create a Diary Content -->
-    <input type="text" id="diary-title" placeholder="Diary Title">
-    <textarea id="diary-content" placeholder="Write your diary..."></textarea>
-    <button onclick="createDiaryEntry()">Create Diary</button>
+        <label for="what">무엇을 했나요?</label>
+        <input type="text" id="what" name="what" required><br>
+
+        <label for="feeling">어땠나요?</label>
+        <input type="text" id="feeling" name="feeling" required><br>
+
+        <button type="submit">일기 생성</button>
+    </form>
+
+    <h2>생성된 일기</h2>
+    <div id="diaryOutput"></div>
 
     <script>
-    function createDiaryEntry() {
-        const title = document.getElementById('diary-title').value;
-        const content = document.getElementById('diary-content').value;
+        $(document).ready(function() {
+            $('#diaryForm').on('submit', function(event) {
+                event.preventDefault(); // 폼 제출 방지
 
-        $.ajax({
-            url: 'http://localhost:8000/create_diary',
-            type: 'POST',
-            contentType: 'application/json',
-            data: JSON.stringify({ title: title, content: content }),
-            success: function(response) {
-                alert('Diary entry created successfully!');
-            },
-            error: function() {
-                alert('Failed to create diary entry.');
-            }
+                // 사용자 입력 가져오기
+                const where = $('#where').val();
+                const what = $('#what').val();
+                const feeling = $('#feeling').val();
+
+                // AJAX 요청 보내기
+                $.ajax({
+                    type: 'POST',
+                    url: '/generate_diary/',  // Django 뷰와 연결된 URL
+                    data: {
+                        'where': where,
+                        'what': what,
+                        'feeling': feeling,
+                        'csrfmiddlewaretoken': '{{ csrf_token }}'  // CSRF 토큰 추가
+                    },
+                    success: function(response) {
+                        // 서버로부터 생성된 일기 응답 받기
+                        $('#diaryOutput').text(response.diary);
+                    },
+                    error: function(xhr, status, error) {
+                        console.log("오류 발생:", error);
+                        $('#diaryOutput').text("일기 생성에 실패했습니다.");
+                    }
+                });
+            });
         });
-    }
     </script>
 </body>
 </html>
